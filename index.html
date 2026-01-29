@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Barkod Generator - Mağaza üçün</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f8f9fa;
+      padding: 20px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    h1 { text-align: center; color: #333; }
+    .container {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    label { display: block; margin: 15px 0 5px; font-weight: bold; }
+    input, select {
+      width: 100%;
+      padding: 12px;
+      font-size: 18px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      box-sizing: border-box;
+    }
+    #barcode {
+      display: block;
+      margin: 30px auto;
+      background: white;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+    }
+    button {
+      width: 100%;
+      padding: 14px;
+      background: #28a745;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 18px;
+      cursor: pointer;
+      margin-top: 15px;
+    }
+    button:hover { background: #218838; }
+    .info { font-size: 13px; color: #666; margin-top: 10px; text-align: center; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Barkod Generator</h1>
+
+  <label>Barkod Növü seçin (Scanner ilə oxuna bilən):</label>
+  <select id="format">
+    <option value="CODE128" selected>CODE128 (Ən universal)</option>
+    <option value="EAN13">EAN-13 (13 rəqəm, məhsul üçün standart)</option>
+    <option value="CODE39">CODE39 (Hərf + rəqəm)</option>
+  </select>
+
+  <label>Məhsulun barkod nömrəsini yazın:</label>
+  <input type="text" id="barcodeValue" placeholder="Məsələn: 1234567890128 və ya ABC123" autofocus>
+
+  <button onclick="generateBarcode()">Barkodu Yarat</button>
+
+  <svg id="barcode"></svg>
+
+  <p class="info">
+    Barkodu ekrandan çap edin və ya sağ kliklə → Şəkil kimi saxlayın.<br>
+    Əksər printerlərdən 100-150% miqyasda çap etmək yaxşı oxunur.
+  </p>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
+
+<script>
+  function generateBarcode() {
+    const value = document.getElementById('barcodeValue').value.trim();
+    const format = document.getElementById('format').value;
+
+    if (!value) {
+      alert("Barkod nömrəsini daxil edin!");
+      return;
+    }
+
+    try {
+      JsBarcode("#barcode", value, {
+        format: format,
+        lineColor: "#000",
+        width: 2.5,
+        height: 120,
+        fontSize: 20,
+        displayValue: true,
+        margin: 10
+      });
+    } catch (err) {
+      alert("Xəta: " + err.message + "\n\nEAN-13 üçün tam 13 rəqəm yazın!");
+    }
+  }
+
+  document.getElementById('barcodeValue').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') generateBarcode();
+  });
+
+  // Nümunə ilə başla
+  window.onload = () => {
+    document.getElementById('barcodeValue').value = "1234567890128";
+    generateBarcode();
+  };
+</script>
+
+</body>
+</html>
