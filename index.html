@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Barkod Generator - Mağaza üçün</title>
+  <title>MyHomeBaku Barkod Generator</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -12,7 +12,12 @@
       max-width: 600px;
       margin: 0 auto;
     }
-    h1 { text-align: center; color: #333; }
+    h1 {
+      text-align: center;
+      color: #40C4FF;          /* Açıq mavi ton (istəyə görə #00BFFF və ya #4FC3F7 də edə bilərsən) */
+      font-size: 2.2em;
+      margin-bottom: 25px;
+    }
     .container {
       background: white;
       padding: 25px;
@@ -35,6 +40,7 @@
       padding: 15px;
       border: 1px solid #ddd;
       border-radius: 8px;
+      max-width: 100%;
     }
     button {
       width: 100%;
@@ -54,7 +60,7 @@
 <body>
 
 <div class="container">
-  <h1>Barkod Generator</h1>
+  <h1>MyHomeBaku Barkod Generator</h1>
 
   <label>Barkod Növü seçin (Scanner ilə oxuna bilən):</label>
   <select id="format">
@@ -68,11 +74,11 @@
 
   <button onclick="generateBarcode()">Barkodu Yarat</button>
 
-  <svg id="barcode"></svg>
+  <img id="barcode" alt="Generated Barcode">
 
   <p class="info">
-    Barkodu ekrandan çap edin və ya sağ kliklə → Şəkil kimi saxlayın.<br>
-    Əksər printerlərdən 100-150% miqyasda çap etmək yaxşı oxunur.
+    Barkod hazır olduqdan sonra üzərinə sağ klikləyin → "Şəkli fərqli saxla..." seçin (PNG və ya JPG olaraq).<br>
+    Çap üçün 120-150% miqyas tövsiyə olunur.
   </p>
 </div>
 
@@ -82,9 +88,11 @@
   function generateBarcode() {
     const value = document.getElementById('barcodeValue').value.trim();
     const format = document.getElementById('format').value;
+    const barcodeImg = document.getElementById('barcode');
 
     if (!value) {
       alert("Barkod nömrəsini daxil edin!");
+      barcodeImg.src = "";
       return;
     }
 
@@ -96,10 +104,13 @@
         height: 120,
         fontSize: 20,
         displayValue: true,
-        margin: 10
+        margin: 10,
+        background: "#ffffff",
+        renderer: "img"
       });
     } catch (err) {
       alert("Xəta: " + err.message + "\n\nEAN-13 üçün tam 13 rəqəm yazın!");
+      barcodeImg.src = "";
     }
   }
 
@@ -107,7 +118,6 @@
     if (e.key === 'Enter') generateBarcode();
   });
 
-  // Nümunə ilə başla
   window.onload = () => {
     document.getElementById('barcodeValue').value = "1234567890128";
     generateBarcode();
